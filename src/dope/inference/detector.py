@@ -266,6 +266,9 @@ class ObjectDetector(object):
         detected_objects = []
         obj_name = pnp_solver.object_name
 
+        # print(objects)
+        # print(all_peaks)
+
         for obj in objects:
             # Run PNP
             points = obj[1] + [(obj[0][0]*8, obj[0][1]*8)]
@@ -281,12 +284,17 @@ class ObjectDetector(object):
                 'projected_points': projected_points,
                 'score': obj[-1],
             })
+        # print(detected_objects)
+        # print('--')
 
         return detected_objects
 
     @staticmethod
     def find_objects(vertex2, aff, config, numvertex=8):
         '''Detects objects given network belief maps and affinities, using heuristic method'''
+
+        # print(vertex2)
+        # print(aff)
 
         all_peaks = []
         peak_counter = 0
@@ -370,6 +378,9 @@ class ObjectDetector(object):
                     [None for i in range(numvertex)],
                     all_peaks[-1][nb_object][2]
                 ])
+        
+        # print(objects)
+        # print(all_peaks)
 
         # Working with an output that only has belief maps
         if aff is None:
@@ -448,4 +459,5 @@ class ObjectDetector(object):
                         objects[i_best][1][i_lists] = ((candidate[0])*8, (candidate[1])*8)
                         objects[i_best][2][i_lists] = (best_angle, best_dist)
 
+        # print(objects)
         return objects, all_peaks
