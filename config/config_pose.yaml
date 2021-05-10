@@ -1,8 +1,16 @@
-topic_camera: "/dope/webcam/image_raw"
-topic_camera_info: "/dope/webcam/camera_info"
+# topic_camera: "/camera/rgb/image_raw"
+# topic_camera_info: "/camera/rgb/camera_info"
+# topic_publishing: "dope"
+
+# topic_camera: "/rbkairos_a/arm_rgbd_camera/rgb/image_raw"
+# topic_camera_info: "/rbkairos_a/arm_rgbd_camera/rgb/camera_info"
+# topic_camera: "/robot_arm_rgbd_camera/rgb/image_raw"
+topic_camera: "/robot_arm_rgbd_camera/rgb/image_rect_color"
+topic_camera_info: "/robot_arm_rgbd_camera/rgb/camera_info"
 topic_publishing: "dope"
+
 input_is_rectified: True   # Whether the input image is rectified (strongly suggested!)
-downscale_height: 400      # if the input image is larger than this, scale it down to this pixel height
+downscale_height: 480      # if the input image is larger than this, scale it down to this pixel height
 
 # Comment any of these lines to prevent detection / pose estimation of that object
 weights: {
@@ -10,7 +18,7 @@ weights: {
     # "gelatin":"package://dope/weights/gelatin_60.pth",
     # "meat":"package://dope/weights/meat_20.pth",
     # "mustard":"package://dope/weights/mustard_60.pth",
-    "soup":"package://dope/weights/soup_60.pth",
+    # "soup":"package://dope/weights/soup_60.pth",
     #"sugar":"package://dope/weights/sugar_60.pth",
     # "bleach":"package://dope/weights/bleach_28_dr.pth"
     
@@ -44,6 +52,13 @@ weights: {
     # "Tuna":"package://dope/weights/Tuna.pth",
     # "Yogurt":"package://dope/weights/Yogurt.pth",
 
+    # "blue_box":"package://dope/weights/blue_box_01_10_e60.pth", # works ok from a distance
+    # "blue_box":"package://dope/weights/blue_box_23_10_e60.pth", # test
+    # "new_box":"package://dope/weights/new_box_57_settings.pth", # test
+    #"new_box":"package://dope/weights/new_box_120k_e19.pth", # test
+    "new_box":"package://dope/weights/new_box_color_lights_e31.pth", # test
+    #"new_box":"package://dope/weights/new_box_lights_20k_60.pth", # test
+    # "new_box_wo_handle":"package://dope/weights/wo_handle_45.pth", # test
 }
 
 # Cuboid dimension in cm x,y,z
@@ -84,7 +99,11 @@ dimensions: {
     "GranolaBars" : [ 12.400600433349609, 3.8738000392913818, 16.53380012512207 ], 
     "Peaches" : [ 5.7781000137329102, 7.0961999893188477, 6.5925998687744141 ],
     "GreenBeans" : [ 5.758699893951416, 7.0608000755310059, 6.5732002258300781 ], 
-    "PeasAndCarrots" : [ 5.8512001037597656, 7.0636000633239746, 6.5918002128601074 ] 
+    "PeasAndCarrots" : [ 5.8512001037597656, 7.0636000633239746, 6.5918002128601074 ], 
+    
+    "blue_box": [ 27, 35.400001525878906, 40 ],
+    "new_box": [ 23, 23.7, 29.4 ],
+    "new_box_wo_handle": [ 23, 12, 29.4 ],
 }
 
 class_ids: {
@@ -95,6 +114,7 @@ class_ids: {
     "soup":    5,
     "sugar":   6,
     "bleach":  7,
+
     "AlphabetSoup"      : 9, 
     "Ketchup"           : 10, 
     "Pineapple"         : 11,
@@ -122,7 +142,11 @@ class_ids: {
     "GranolaBars"       : 33, 
     "Peaches"           : 34,
     "GreenBeans"        : 35, 
-    "PeasAndCarrots"    : 36 
+    "PeasAndCarrots"    : 36,
+
+    "blue_box": 8,
+    "new_box": 37,
+    "new_box_wo_handle": 38,
 }
 
 draw_colors: {
@@ -133,6 +157,9 @@ draw_colors: {
     "soup": [255, 101, 0],  # orange
     "sugar": [232, 222, 12],  # yellow
     "bleach": [232, 222, 12],  # yellow
+    "blue_box": [0, 104, 255],  # blue
+    "new_box": [255, 101, 0],  # orange
+    "new_box_wo_handle": [13, 255, 128],  # green
 }
 
 # optional: provide a transform that is applied to the pose returned by DOPE
@@ -140,7 +167,15 @@ model_transforms: {
 #    "cracker": [[ 0,  0,  1,  0],
 #                [ 0, -1,  0,  0],
 #                [ 1,  0,  0,  0],
-#                [ 0,  0,  0,  1]]
+#                [ 0,  0,  0,  1]],
+    "blue_box": [[ 0, 0, 1, 0 ],
+                [ -1, 0, 0, 0 ],
+                [ 0, -1, 0, 0 ],
+                [ 0, 0, 0, 1 ]],
+    "new_box": [[ 0, 0, 1, 0 ],
+                [-1, 0, 0, 0 ],
+                [ 0,-1, 0, 0 ],
+                [ 0, 0, 0, 1 ]]
 }
 
 # optional: if you provide a mesh of the object here, a mesh marker will be
@@ -154,6 +189,8 @@ meshes: {
 #    "soup":    "file://path/to/Dataset_Utilities/nvdu/data/ycb/aligned_cm/005_tomato_soup_can/google_16k/textured.obj",
 #    "sugar":   "file://path/to/Dataset_Utilities/nvdu/data/ycb/aligned_cm/004_sugar_box/google_16k/textured.obj",
 #    "bleach":  "file://path/to/Dataset_Utilities/nvdu/data/ycb/aligned_cm/021_bleach_cleanser/google_16k/textured.obj",
+    "blue_box":  "file:///home/gtsamis/ros_projects/dope_ws/src/Deep_Object_Pose/object_meshes/blue_box2.obj",
+    "new_box":  "file:///home/gtsamis/ros_projects/dope_ws/src/Deep_Object_Pose/object_meshes/new_box.obj",
 }
 
 # optional: If the specified meshes are not in meters, provide a scale here (e.g. if the mesh is in centimeters, scale should be 0.01). default scale: 1.0.
@@ -165,10 +202,11 @@ mesh_scales: {
     "soup":    0.01,
     "sugar":   0.01,
     "bleach":  0.01,
+    # "blue_box": 0.01,
 }
 
 # Config params for DOPE
 thresh_angle: 0.5
 thresh_map: 0.01
 sigma: 3
-thresh_points: 0.1
+thresh_points: 0.01 #0.1
