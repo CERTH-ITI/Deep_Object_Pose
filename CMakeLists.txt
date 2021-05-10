@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   vision_msgs
   visualization_msgs
+  std_srvs
 )
 
 ## System dependencies are found with CMake's conventions

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # Copyright (c) 2018 NVIDIA Corporation. All rights reserved.
 # This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
@@ -28,6 +28,7 @@ from sensor_msgs.msg import CameraInfo, Image as ImageSensor_msg
 from std_msgs.msg import String
 from vision_msgs.msg import Detection3D, Detection3DArray, ObjectHypothesisWithPose
 from visualization_msgs.msg import Marker, MarkerArray
+from std_srvs.srv import SetBool, SetBoolResponse
 
 
 class Draw(object):
@@ -197,20 +198,50 @@ class DopeNode(object):
                 queue_size=10
             )
 
+        # Start ROS service for sub/unsub to image topic
+        self.sub_status = True
+        sub_srv = rospy.Service('dope/object_detection', SetBool, self.sub_service)
+
         # Start ROS subscriber
-        image_sub = message_filters.Subscriber(
+        self.image_sub = message_filters.Subscriber(
             rospy.get_param('~topic_camera'),
             ImageSensor_msg
         )
-        info_sub = message_filters.Subscriber(
+        self.info_sub = message_filters.Subscriber(
             rospy.get_param('~topic_camera_info'),
             CameraInfo
         )
-        ts = message_filters.TimeSynchronizer([image_sub, info_sub], 1)
-        ts.registerCallback(self.image_callback)
+        self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub, self.info_sub], queue_size=10, slop=2)
+        self.ts.registerCallback(self.image_callback)
 
         print("Running DOPE...  (Listening to camera topic: '{}')".format(rospy.get_param('~topic_camera')))
         print("Ctrl-C to stop")
+
+    def sub_service(self, req):
+
+        if self.sub_status and not req.data:
+            self.image_sub.sub.unregister()
+            self.info_sub.sub.unregister()
+            self.sub_status = False
+            print("Stopped listening to camera topic")
+        elif not self.sub_status and req.data:
+            self.image_sub = message_filters.Subscriber(
+                rospy.get_param('~topic_camera'),
+                ImageSensor_msg
+            )
+            self.info_sub = message_filters.Subscriber(
+                rospy.get_param('~topic_camera_info'),
+                CameraInfo
+            )
+            self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub, self.info_sub], queue_size=10, slop=2)
+            self.ts.registerCallback(self.image_callback)
+            self.sub_status = True
+            print("Listening to camera topic")
+        
+        resp = SetBoolResponse()
+        resp.success = True
+        return resp
+        
 
     def image_callback(self, image_msg, camera_info):
         """Image callback"""
