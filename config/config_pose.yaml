@@ -189,8 +189,8 @@ meshes: {
 #    "soup":    "file://path/to/Dataset_Utilities/nvdu/data/ycb/aligned_cm/005_tomato_soup_can/google_16k/textured.obj",
 #    "sugar":   "file://path/to/Dataset_Utilities/nvdu/data/ycb/aligned_cm/004_sugar_box/google_16k/textured.obj",
 #    "bleach":  "file://path/to/Dataset_Utilities/nvdu/data/ycb/aligned_cm/021_bleach_cleanser/google_16k/textured.obj",
-    "blue_box":  "file:///home/gtsamis/ros_projects/dope_ws/src/Deep_Object_Pose/object_meshes/blue_box2.obj",
-    "new_box":  "file:///home/gtsamis/ros_projects/dope_ws/src/Deep_Object_Pose/object_meshes/new_box.obj",
+    "blue_box":  "file:///home/gtsamis/ros_projects/hr-recycler-project/deps_ws/src/Deep_Object_Pose/object_meshes/blue_box2.obj",
+    "new_box":  "file:///home/gtsamis/ros_projects/hr-recycler-project/deps_ws/src/Deep_Object_Pose/object_meshes/new_box.obj",
 }
 
 # optional: If the specified meshes are not in meters, provide a scale here (e.g. if the mesh is in centimeters, scale should be 0.01). default scale: 1.0.
