@@ -311,7 +311,7 @@ class DopeNode(object):
 
         resp = DopeOnImageResponse()
 
-        if detection_array.size > 0:
+        if len(detection_array.detections) > 0:
             resp.success = True
         else:
             resp.success = False
