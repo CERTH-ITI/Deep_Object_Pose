@@ -1,0 +1,8 @@
+name: dope2
+channels:
+  - defaults
+dependencies:
+  - python=2.7
+  - ipython
+  - tensorflow
+prefix: /home/gtsamis/miniconda2/envs/dope2
